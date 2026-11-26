@@ -1,4 +1,4 @@
-// Planty community: posts with photos, likes, replies and reports, stored in Supabase.
+// Florae community: posts with photos, likes, replies and reports, stored in Supabase.
 import { supabase as sb } from "./supabase.js";
 import { $, esc, icon, toast, openSheet, closeSheets, fileToDataUrl, shrinkDataUrl, timeAgo, avatar, busy } from "./ui.js";
 import { getSession, myName } from "./auth.js";
@@ -51,7 +51,7 @@ export async function showCommunity() {
 function renderFeed() {
   const feed = $("feed");
   if (!feedCache.length) {
-    feed.innerHTML = `<div class="empty">${icon("sprout")}<b>No posts yet</b>Be the first to share what you're growing.</div>`;
+    feed.innerHTML = `<div class="empty">${icon("sprout")}<b>No posts yet</b>Share what you're growing, or ask a question.</div>`;
     return;
   }
   feed.innerHTML = feedCache.map((p) => postCard(p)).join("");
@@ -233,7 +233,7 @@ async function publish() {
   const body = $("postBody").value.trim();
   if (!body) {
     $("postBody").focus();
-    return toast("Write a few words first 🙂");
+    return toast("Write a few words first.");
   }
   const done = busy($("publishBtn"), "Posting…");
   try {
@@ -257,7 +257,7 @@ async function publish() {
 
     closeSheets();
     composePhoto = null;
-    toast("Posted! 🌱");
+    toast("Posted");
     goToCommunity();
   } catch (err) {
     console.error(err);

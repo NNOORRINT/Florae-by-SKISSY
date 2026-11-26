@@ -107,7 +107,7 @@ async function importLegacy(btn, rerender) {
     }
   }
   if (ok === list.length) localStorage.removeItem(LEGACY_KEY);
-  toast(ok ? `Added ${ok} check${ok === 1 ? "" : "s"} to your account 🌱` : "Couldn't add your old checks. Try again later.");
+  toast(ok ? `Added ${ok} check${ok === 1 ? "" : "s"} to your account` : "Couldn't add your old checks. Try again later.");
   rerender();
 }
 
@@ -151,8 +151,8 @@ export async function renderGarden({ onOpen, onScan }) {
 
   if (!list.length) {
     el.innerHTML = `${banner}
-      <div class="empty">${icon("sprout")}<b>Your herbarium is empty</b>Every plant you check is saved here.</div>
-      <button class="btn primary block" id="gardenScan">${icon("camera")}Check your first plant</button>`;
+      <div class="empty">${icon("sprout")}<b>Nothing here yet</b>Every plant you check is saved here.</div>
+      <button class="btn primary block" id="gardenScan">Check your first plant</button>`;
     $("gardenScan").onclick = onScan;
   } else {
     const attention = list.filter((s) => ["needs_attention", "critical"].includes(s.health_status)).length;

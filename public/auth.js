@@ -1,6 +1,6 @@
 // Accounts: sign in, sign up, password reset, profile and the account sheet.
 import { supabase as sb } from "./supabase.js";
-import { $, esc, toast, openSheet, closeSheets, avatar, busy } from "./ui.js";
+import { $, esc, toast, openSheet, closeSheets, avatar, busy, addPasswordToggles, hidePasswords } from "./ui.js";
 import { GOOGLE_SIGN_IN } from "./config.js";
 
 let mode = "signin";
@@ -17,15 +17,29 @@ export async function authHeader() {
   return data.session ? { Authorization: `Bearer ${data.session.access_token}` } : {};
 }
 
-// ---------- Sign-in screen ----------
+// ---------- Sign-in dialog (on the landing page) ----------
+export function openAuth(m = "signin") {
+  setMode(m);
+  $("authDialog").classList.remove("hidden");
+  document.body.classList.add("dialog-open");
+  setTimeout(() => (m === "signup" ? $("authName") : $("authEmail")).focus(), 50);
+}
+export function closeAuth() {
+  hidePasswords();
+  $("authDialog").classList.add("hidden");
+  document.body.classList.remove("dialog-open");
+}
+
+// ---------- Sign-in form ----------
 const COPY = {
-  signin: { title: "Welcome back", sub: "Sign in to check your plants and join the community.", submit: "Sign in" },
-  signup: { title: "Create your account", sub: "Free, and it takes 20 seconds.", submit: "Create account" },
+  signin: { title: "Welcome back", sub: "Sign in to check a plant or see your saved ones.", submit: "Sign in" },
+  signup: { title: "Create your account", sub: "Free. Ten plant checks a day.", submit: "Create account" },
   forgot: { title: "Reset your password", sub: "We'll email you a link to choose a new one.", submit: "Send reset link" },
 };
 
 function setMode(m) {
   mode = m;
+  hidePasswords();
   const c = COPY[m];
   $("authTitle").textContent = c.title;
   $("authSub").textContent = c.sub;
@@ -163,14 +177,14 @@ async function savePassword() {
   if (error) return toast(friendly(error));
   $("newPassword").value = "";
   closeSheets();
-  toast("Password updated 🌱");
+  toast("Password updated");
 }
 
 // ---------- Session changes ----------
 async function handle(event, s) {
   const user = s?.user;
 
-  // Old versions of Planty used anonymous "nickname" sessions; those can't be used any more.
+  // Old versions of Florae used anonymous "nickname" sessions; those can't be used any more.
   if (user?.is_anonymous) {
     await sb.auth.signOut();
     return;
@@ -180,6 +194,7 @@ async function handle(event, s) {
     const isNew = session?.user.id !== user.id;
     session = s;
     if (isNew) {
+      closeAuth();
       await loadProfile();
       hooks.onSignedIn();
     }
@@ -194,19 +209,29 @@ async function handle(event, s) {
   profile = null;
   setMode("signin");
   hooks.onSignedOut();
+  // Links that need an account (e.g. /#community from the wiki) open the sign-in dialog.
+  if (["#community", "#garden", "#signin"].includes(location.hash)) openAuth("signin");
 }
 
 export function initAuth(opts) {
   hooks = { ...hooks, ...opts };
+  addPasswordToggles();
 
   // Errors from email links, e.g. an expired confirmation link.
   const hash = new URLSearchParams(location.hash.slice(1));
   if (hash.get("error_description")) {
-    setTimeout(() => toast(hash.get("error_description").replace(/\+/g, " ") + ". Please try again.", 6000), 600);
+    const msg = hash.get("error_description").replace(/\+/g, " ") + ". Please try again.";
+    setTimeout(() => {
+      openAuth("signin");
+      showError(msg);
+    }, 600);
     history.replaceState(null, "", location.pathname);
   }
 
   $("authForm").addEventListener("submit", submit);
+  document.querySelectorAll("[data-auth]").forEach((b) => (b.onclick = () => openAuth(b.dataset.auth)));
+  document.querySelectorAll("[data-auth-close]").forEach((b) => (b.onclick = closeAuth));
+  document.addEventListener("keydown", (e) => e.key === "Escape" && !$("authDialog").classList.contains("hidden") && closeAuth());
   document.querySelectorAll("#authSeg button").forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
   $("forgotBtn").onclick = () => setMode(mode === "forgot" ? "signin" : "forgot");
   $("sentBack").onclick = () => setMode("signin");

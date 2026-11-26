@@ -1,4 +1,4 @@
-// Planty by Skissy: app start, navigation and the scan flow.
+// Florae by Skissy: app start, navigation and the identify flow.
 import { $, esc, icon, toast, closeSheets, fileToDataUrl, hydrateIcons, avatar } from "./ui.js";
 import { supabase as sb } from "./supabase.js";
 import { initAuth, authHeader, myName, openAccount } from "./auth.js";
@@ -19,7 +19,7 @@ let currentStep = "home";
 function showView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === `view-${name}`));
-  document.querySelectorAll(".tab").forEach((t) => {
+  document.querySelectorAll(".tab[data-view]").forEach((t) => {
     const on = t.dataset.view === name;
     t.classList.toggle("active", on);
     t.setAttribute("aria-current", on ? "page" : "false");
@@ -47,7 +47,7 @@ function goHome() {
   showView("scan");
 }
 
-document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => showView(t.dataset.view)));
+document.querySelectorAll(".tab[data-view]").forEach((t) => (t.onclick = () => showView(t.dataset.view)));
 $("backBtn").onclick = () => {
   if (currentStep === "result" && resultFrom === "garden") {
     showStep("home");
@@ -60,7 +60,7 @@ $("accountBtn").onclick = openAccount;
 function greet() {
   const h = new Date().getHours();
   const first = myName().split(" ")[0];
-  $("greeting").textContent = `${h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"}, ${first}`;
+  $("greeting").textContent = `${h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"}, ${first}.`;
   $("accountBtn").innerHTML = avatar(myName());
 }
 
@@ -68,8 +68,8 @@ function showQuota(left) {
   if (typeof left !== "number") return ($("quotaLine").innerHTML = "");
   $("quotaLine").innerHTML =
     left > 0
-      ? `<span class="leaf-dot"></span><b>${left}</b>&nbsp;free check${left === 1 ? "" : "s"} left today`
-      : `<span class="leaf-dot off"></span>You've used today's free checks. Back tomorrow!`;
+      ? `<span class="leaf-dot"></span><span><b>${left}</b> free check${left === 1 ? "" : "s"} left today</span>`
+      : `<span class="leaf-dot off"></span>You've used today's free checks. More tomorrow.`;
 }
 
 async function refreshHome() {
@@ -83,7 +83,7 @@ async function refreshHome() {
     /* table may not exist yet */
   }
   $("recent").innerHTML = list.length
-    ? `<div class="recent-head"><h3>Recently checked</h3><button class="text-btn" id="seeAll">See all</button></div>
+    ? `<div class="recent-head"><h3>Recent</h3><button class="text-btn" id="seeAll">All plants</button></div>
        <div class="recent-row">${list
          .map((s) => {
            const [cls] = HEALTH[s.health_status] || ["plain"];
@@ -104,8 +104,6 @@ async function handleFile(file) {
     currentScan = null;
     $("previewImg").src = currentPhoto;
     $("notes").value = "";
-    $("notes").classList.add("hidden");
-    $("noteToggle").classList.remove("hidden");
     showView("scan");
     showStep("preview");
   } catch (err) {
@@ -118,11 +116,21 @@ for (const id of ["cameraInput", "galleryInput"]) {
     e.target.value = "";
   };
 }
-$("noteToggle").onclick = () => {
-  $("noteToggle").classList.add("hidden");
-  $("notes").classList.remove("hidden");
-  $("notes").focus();
-};
+
+// Drag a photo onto the drop area (desktop).
+const drop = $("dropzone");
+["dragenter", "dragover"].forEach((ev) =>
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault();
+    drop.classList.add("over");
+  })
+);
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
+drop.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const file = e.dataTransfer?.files?.[0];
+  if (file) handleFile(file);
+});
 $("retakeBtn").onclick = goHome;
 $("againBtn").onclick = goHome;
 
@@ -169,7 +177,7 @@ async function analyze() {
 
     if (currentResult.is_plant) {
       saveScan(currentPhoto, currentResult, notes)
-        .then(() => toast("Saved to My plants 🌱"))
+        .then(() => toast("Saved to My plants"))
         .catch((err) => {
           console.error(err);
           toast("Couldn't save this check to My plants.");
@@ -177,7 +185,7 @@ async function analyze() {
     }
   } catch (err) {
     showStep("preview");
-    toast(err.message === "Failed to fetch" ? "Couldn't reach Planty. Check your connection." : err.message);
+    toast(err.message === "Failed to fetch" ? "Couldn't reach Florae. Check your connection." : err.message);
   } finally {
     clearInterval(ticker);
   }
@@ -223,10 +231,31 @@ function enterApp() {
   $("app").classList.remove("hidden");
   closeSheets();
   showStep("home");
-  showView("scan");
+  // Links like /#community and /#garden open that tab.
+  const tab = location.hash.slice(1);
+  showView(["community", "garden"].includes(tab) ? tab : "scan");
+  if (tab) history.replaceState(null, "", location.pathname);
+}
+
+// Landing page: four real plants from the wiki (hidden if the wiki is empty or unreachable).
+async function showFeature() {
+  const sec = $("landWiki");
+  const { data, error } = await sb.rpc("wiki_search", { q: "", p_has_image: true, p_limit: 60, p_offset: 0 });
+  if (error || !data?.length) return sec.classList.add("hidden");
+  const pick = [...data].sort(() => Math.random() - 0.5).slice(0, 4);
+  $("landWikiGrid").innerHTML = pick
+    .map(
+      (p) => `<a class="wk-card" href="/wiki/${esc(p.slug)}">
+        <div class="img"><img src="${esc(p.thumb_url)}" alt="" loading="lazy" /></div>
+        <b>${esc(p.common_name)}</b>${p.common_name !== p.scientific_name ? `<i>${esc(p.scientific_name)}</i>` : ""}
+      </a>`
+    )
+    .join("");
+  sec.classList.remove("hidden");
 }
 
 function leaveApp() {
+  showFeature();
   document.body.classList.remove("booting");
   currentPhoto = currentResult = currentScan = null;
   resetGarden();

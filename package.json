@@ -1,12 +1,14 @@
 {
-  "name": "planty",
+  "name": "florae",
   "version": "1.0.0",
   "description": "Snap a photo of a plant: identify it, its growth stage, problems and what to do next",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --env-file-if-exists=.env server.js",
-    "dev": "node --watch --env-file-if-exists=.env server.js"
+    "dev": "node --watch --env-file-if-exists=.env server.js",
+    "import-wiki": "node --env-file-if-exists=.env scripts/import-wiki.mjs",
+    "import-wiki:dry": "node --env-file-if-exists=.env scripts/import-wiki.mjs --dry-run --out data/import-preview.json"
   },
   "keywords": [],
   "author": "",
