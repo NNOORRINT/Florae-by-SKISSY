@@ -34,6 +34,10 @@ const PATHS = {
   calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  book: '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+  eyeOff: '<path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.1 4M6.6 6.6C3.7 8.4 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/>',
 };
 export const icon = (name, cls = "") =>
   `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${PATHS[name] || ""}</svg>`;
@@ -41,6 +45,48 @@ export const icon = (name, cls = "") =>
 // Fill every <span data-icon="name"> on the page.
 export function hydrateIcons(root = document) {
   root.querySelectorAll("[data-icon]").forEach((el) => (el.innerHTML = icon(el.dataset.icon)));
+}
+
+// ---------- Show / hide password ----------
+function setPasswordVisible(input, btn, show) {
+  input.type = show ? "text" : "password";
+  btn.innerHTML = icon(show ? "eyeOff" : "eye");
+  btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+  btn.setAttribute("aria-pressed", String(show));
+}
+
+// Add an eye button to every password field (once per field).
+export function addPasswordToggles(root = document) {
+  root.querySelectorAll('input[type="password"]:not([data-pw])').forEach((input) => {
+    input.dataset.pw = "1";
+    const wrap = document.createElement("span");
+    wrap.className = "pw-wrap";
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pw-toggle";
+    setPasswordVisible(input, btn, false);
+    btn.addEventListener("click", () => {
+      const end = input.selectionEnd;
+      setPasswordVisible(input, btn, input.type === "password");
+      input.focus();
+      try {
+        input.setSelectionRange(end, end);
+      } catch {
+        /* some browsers refuse on type switch */
+      }
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+// Hide every revealed password again (when a form resets or closes).
+export function hidePasswords(root = document) {
+  root.querySelectorAll("input[data-pw]").forEach((input) => {
+    const btn = input.parentNode.querySelector(".pw-toggle");
+    if (btn) setPasswordVisible(input, btn, false);
+  });
 }
 
 // ---------- Toast ----------
@@ -56,14 +102,15 @@ export function toast(msg, ms = 3400) {
 // ---------- Bottom sheets ----------
 export function openSheet(id) {
   document.querySelectorAll(".sheet.open").forEach((s) => s.classList.remove("open"));
-  $("sheetBackdrop").classList.remove("hidden");
+  $("sheetBackdrop")?.classList.remove("hidden");
   $(id).classList.add("open");
 }
 export function closeSheets() {
+  hidePasswords();
   document.querySelectorAll(".sheet.open").forEach((s) => s.classList.remove("open"));
-  $("sheetBackdrop").classList.add("hidden");
+  $("sheetBackdrop")?.classList.add("hidden");
 }
-$("sheetBackdrop").addEventListener("click", closeSheets);
+$("sheetBackdrop")?.addEventListener("click", closeSheets);
 document.addEventListener("keydown", (e) => e.key === "Escape" && closeSheets());
 document.querySelectorAll("[data-close-sheet]").forEach((b) => b.addEventListener("click", closeSheets));
 
@@ -131,7 +178,7 @@ export function timeAgo(iso) {
 export const fmtDate = (d) => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 
 // ---------- Avatars ----------
-const AVATAR_COLORS = ["#234a35", "#6f8f3e", "#c0623a", "#4f7d93", "#8a5a83", "#b07d1f", "#3f7a6f"];
+const AVATAR_COLORS = ["#27412e", "#5b6b4a", "#8a5a3c", "#46606e", "#6e5468", "#8a6a2c", "#3e625a"];
 export function avatar(name, cls = "") {
   const n = String(name || "?");
   let h = 0;

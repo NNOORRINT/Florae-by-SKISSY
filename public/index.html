@@ -3,26 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f3eee3" />
-  <meta name="description" content="Snap a photo of your plant. Planty names it, reads its growth stage, spots trouble early and tells you exactly what to do next." />
-  <meta property="og:title" content="Planty by Skissy: your plant's second opinion" />
-  <meta property="og:description" content="Snap one photo. Planty names the plant, spots trouble early and tells you what to do next." />
+  <meta name="theme-color" content="#f3faf0" />
+  <meta name="description" content="Photograph a plant to learn what it is, how it's doing and what it needs. With an open plant index built on Wikipedia and GBIF." />
+  <meta property="og:title" content="Florae" />
+  <meta property="og:description" content="Photograph a plant to learn what it is, how it's doing and what it needs." />
   <meta property="og:type" content="website" />
-  <title>Planty by Skissy</title>
-  <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icon.svg" />
+  <title>Florae by Skissy</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/bg.js" defer></script>
+  <script src="/hero.js" defer></script>
 </head>
 <body class="booting">
 
-  <!-- ================= SPLASH ================= -->
   <div id="splash" aria-live="polite">
-    <span class="splash-leaf"></span>
-    <p id="splashMsg" class="hidden">Couldn't load Planty. Check your connection and refresh the page.</p>
+    <img src="/plant-art.svg" alt="" width="110" height="125" class="splash-bot" />
+    <span class="splash-mark">Florae</span>
+    <p id="splashMsg" class="hidden">Florae didn't load. Check your connection and refresh.</p>
   </div>
   <script>
     setTimeout(function () {
@@ -30,194 +32,230 @@
     }, 9000);
   </script>
 
-  <!-- ================= SIGN IN ================= -->
+  <!-- ================= SIGNED OUT ================= -->
   <div id="auth" class="auth hidden">
-    <section class="auth-hero">
-      <span class="brand"><span class="brand-mark"></span>planty</span>
-      <h1 class="display">Your plant's<br /><em>second opinion.</em></h1>
-      <p class="lead">Snap one photo. Planty names the plant, reads its growth stage, spots trouble early and tells you exactly what to do next.</p>
+    <header class="site-head">
+      <a class="wordmark" href="/">Florae</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="/wiki">Plant wiki</a>
+        <button type="button" class="link-nav" data-auth="signin">Sign in</button>
+      </nav>
+      <button type="button" class="btn primary small head-cta" data-auth="signup">Get started</button>
+    </header>
 
-      <div class="hero-art">
-        <div class="arch">
-          <span class="sunspot"></span>
-          <svg class="art" viewBox="0 0 200 240" aria-hidden="true">
-            <path d="M100 172 C100 132 101 108 100 64" stroke="#234a35" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <path d="M100 122 C70 122 48 102 42 70 C76 70 98 90 100 122Z" fill="#6f8f3e"/>
-            <path d="M100 100 C128 100 152 82 160 50 C124 50 102 70 100 100Z" fill="#234a35"/>
-            <path d="M100 72 C86 60 84 40 97 20 C111 38 111 58 100 72Z" fill="#8fae55"/>
-            <path d="M100 148 C124 148 144 134 152 110 C122 108 104 124 100 148Z" fill="#8fae55"/>
-            <path d="M62 170 H138 L128 230 H72 Z" fill="#c0623a"/>
-            <rect x="56" y="162" width="88" height="16" rx="5" fill="#a5512d"/>
-          </svg>
-          <span class="hero-seal">✓ Healthy</span>
+    <main class="landing">
+      <section class="hero">
+        <div>
+        <h1 class="display">Know what your plant needs.</h1>
+        <p class="lead">Take a photo. Florae tells you what the plant is, how healthy it looks and what to do about it this week.</p>
+        <div class="hero-actions">
+          <button type="button" class="btn primary" data-auth="signup">Check a plant</button>
+          <a class="btn outline" href="/wiki">Browse the plant wiki</a>
         </div>
-        <ul class="features">
-          <li><span data-icon="eye"></span><div><b>Names your plant</b>Common and scientific name, with honest confidence.</div></li>
-          <li><span data-icon="alert"></span><div><b>Spots trouble early</b>Pests, disease, watering, light and nutrient problems.</div></li>
-          <li><span data-icon="check"></span><div><b>Tells you what to do</b>Clear steps for today, this week and ongoing.</div></li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="auth-panel">
-      <div id="authCard" class="auth-card">
-        <div id="authSeg" class="seg" role="tablist">
-          <button type="button" data-mode="signin" class="active" role="tab">Sign in</button>
-          <button type="button" data-mode="signup" role="tab">Create account</button>
+        <p class="aside">Free, 10 checks a day. The plant wiki is open to everyone, no account needed.</p>
         </div>
-        <h2 id="authTitle">Welcome back</h2>
-        <p id="authSub" class="sub"></p>
+        <figure class="hero-art">
+          <div class="scan-phone" aria-hidden="true">
+            <div class="sp-top"><span class="sp-dot"></span><span class="st-scan">Scanning<span class="sp-dots"><i>.</i><i>.</i><i>.</i></span></span><span class="st-done">Done</span></div>
+            <div class="sp-view photo">
+              <span class="sp-c tl"></span><span class="sp-c tr"></span><span class="sp-c bl"></span><span class="sp-c br"></span>
+              <img src="/hero-plant.jpg" alt="" width="960" height="1280" />
+              <span class="sp-line"></span>
+            </div>
+            <div class="sp-result">
+              <div class="sp-skel"><span></span><span></span></div>
+              <div class="sp-reply">
+                <img class="sp-avatar" src="/planty-avatar.svg" alt="" width="40" height="40" />
+                <div class="sp-bubble"><small>Florae</small><b>Chinese money plant</b><i>Pilea peperomioides</i></div>
+              </div>
+            </div>
+          </div>
+          <span class="chip chip-a" aria-hidden="true">Confident match</span>
+          <span class="chip chip-b" aria-hidden="true"><i></i>Healthy</span>
+          <span class="chip chip-c" aria-hidden="true">Water this week</span>
+          <figcaption class="hero-credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Pilea_peperomioides_Chinese_money_plant.jpg" target="_blank" rel="noopener">Husky</a>, CC0, via Wikimedia Commons</figcaption>
+        </figure>
+      </section>
 
-        <div id="googleWrap" class="hidden">
-          <button type="button" id="googleBtn" class="btn outline block">
-            <svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.2 5.6c4.2-3.9 7.1-9.6 7.1-17.1z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.7 2.3-8.7 2.3-6.4 0-11.7-4.1-13.6-9.8l-7.8 6.1C6.6 42.6 14.6 48 24 48z"/></svg>
-            Continue with Google
-          </button>
-          <div class="or">or with email</div>
+      <section class="land-sec">
+        <h2 class="land-h">How it works</h2>
+        <ol class="steps">
+          <li><b>Photograph it</b><span>The whole plant in daylight, plus a close-up of anything that looks wrong.</span></li>
+          <li><b>Get a reading</b><span>What it is and how sure we are, its growth stage, and possible problems, with the uncertainty stated.</span></li>
+          <li><b>Act on it</b><span>A short plan for today, this week and from now on, with sourced facts from the plant wiki.</span></li>
+        </ol>
+      </section>
+
+      <section id="landWiki" class="land-sec hidden">
+        <div class="land-row"><h2 class="land-h">From the plant wiki</h2><a href="/wiki" class="text-btn">All plants</a></div>
+        <div id="landWikiGrid" class="wk-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-foot">
+      <span>Florae by Skissy</span>
+      <a href="/wiki">Plant wiki</a>
+      <a href="/privacy.html">Privacy</a>
+    </footer>
+  </div>
+
+<!-- Sign in / create account (opened from the landing page) -->
+  <div id="authDialog" class="auth-dialog hidden" role="dialog" aria-modal="true" aria-label="Sign in">
+    <div class="auth-dialog-backdrop" data-auth-close></div>
+    <div class="auth-panel">
+      <button type="button" class="icon-btn auth-close" data-auth-close aria-label="Close"><span data-icon="close"></span></button>
+        <div id="authCard" class="auth-card">
+          <div id="authSeg" class="seg" role="tablist">
+            <button type="button" data-mode="signin" class="active" role="tab">Sign in</button>
+            <button type="button" data-mode="signup" role="tab">Create account</button>
+          </div>
+          <h2 id="authTitle">Welcome back</h2>
+          <p id="authSub" class="sub"></p>
+
+          <div id="googleWrap" class="hidden">
+            <button type="button" id="googleBtn" class="btn outline block">
+              <svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.2 5.6c4.2-3.9 7.1-9.6 7.1-17.1z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.7 2.3-8.7 2.3-6.4 0-11.7-4.1-13.6-9.8l-7.8 6.1C6.6 42.6 14.6 48 24 48z"/></svg>
+              Continue with Google
+            </button>
+            <div class="or">or</div>
+          </div>
+
+          <form id="authForm" novalidate>
+            <label class="fl" data-show="signup"><span>Name</span>
+              <input id="authName" autocomplete="name" maxlength="40" />
+            </label>
+            <label class="fl" data-show="signin signup forgot"><span>Email</span>
+              <input id="authEmail" type="email" autocomplete="email" inputmode="email" />
+            </label>
+            <label class="fl" data-show="signin signup"><span>Password</span>
+              <input id="authPassword" type="password" autocomplete="current-password" />
+            </label>
+            <p id="authError" class="form-error hidden" role="alert"></p>
+            <button id="authSubmit" class="btn primary block" type="submit">Sign in</button>
+          </form>
+          <button type="button" id="forgotBtn" class="link-btn">Forgot your password?</button>
+          <p class="fine">By continuing you agree to the <a href="/privacy.html">privacy notice</a>.</p>
         </div>
 
-        <form id="authForm" novalidate>
-          <label class="fl" data-show="signup"><span>Your name</span>
-            <input id="authName" autocomplete="name" maxlength="40" placeholder="e.g. Dara" />
-          </label>
-          <label class="fl" data-show="signin signup forgot"><span>Email</span>
-            <input id="authEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
-          </label>
-          <label class="fl" data-show="signin signup"><span>Password</span>
-            <input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 8 characters" />
-          </label>
-          <p id="authError" class="form-error hidden" role="alert"></p>
-          <button id="authSubmit" class="btn primary block" type="submit">Sign in</button>
-        </form>
-        <button type="button" id="forgotBtn" class="link-btn">Forgot your password?</button>
-        <p class="fine">By continuing you agree to our <a href="privacy.html">privacy notice</a>.</p>
-      </div>
-
-      <div id="authSent" class="auth-card center hidden">
-        <span class="sent-icon" data-icon="mail"></span>
-        <h2 id="sentTitle">Check your inbox</h2>
-        <p id="sentText" class="sub"></p>
-        <button type="button" id="sentBack" class="btn outline block">Back to sign in</button>
-      </div>
-    </section>
+        <div id="authSent" class="auth-card hidden">
+          <span class="sent-icon" data-icon="mail"></span>
+          <h2 id="sentTitle">Check your inbox</h2>
+          <p id="sentText" class="sub"></p>
+          <button type="button" id="sentBack" class="btn outline block">Back to sign in</button>
+        </div>
+    </div>
   </div>
 
   <!-- ================= APP ================= -->
   <div id="app" class="hidden">
-    <header class="top">
-      <button id="backBtn" class="icon-btn hidden" aria-label="Back"><span data-icon="back"></span></button>
-      <span class="brand"><span class="brand-mark"></span>planty</span>
-      <button id="accountBtn" class="icon-btn account-btn" aria-label="Your account"></button>
+    <header class="site-head">
+      <button id="backBtn" class="icon-btn back hidden" aria-label="Back"><span data-icon="back"></span></button>
+      <a class="wordmark" href="/">Florae</a>
+      <nav class="site-nav dock" aria-label="Main">
+        <button class="tab active" data-view="scan"><span data-icon="camera"></span><span class="lbl">Identify</span></button>
+        <a class="tab" href="/wiki"><span data-icon="book"></span><span class="lbl">Wiki</span></a>
+        <button class="tab" data-view="community"><span data-icon="chat"></span><span class="lbl">Community</span></button>
+        <button class="tab" data-view="garden"><span data-icon="sprout"></span><span class="lbl">My plants</span></button>
+      </nav>
+      <button id="accountBtn" class="account-btn" aria-label="Your account"></button>
     </header>
 
     <main>
-      <!-- ========== SCAN ========== -->
+      <!-- ========== IDENTIFY ========== -->
       <section id="view-scan" class="view active">
 
-        <!-- 1. Start -->
         <div id="scan-home" class="step active">
-          <p id="greeting" class="eyebrow hello">Hello</p>
-          <h1 class="display home-title">How's your<br /><em>plant</em> today?</h1>
+          <p id="greeting" class="kicker">Hello</p>
+          <h1 class="display">Which plant are we looking at?</h1>
 
-          <div class="viewfinder">
-            <div class="arch">
-              <span class="sunspot"></span>
-              <svg class="art" viewBox="0 0 200 240" aria-hidden="true">
-                <path d="M100 172 C100 132 101 108 100 64" stroke="#234a35" stroke-width="5" fill="none" stroke-linecap="round"/>
-                <path d="M100 122 C70 122 48 102 42 70 C76 70 98 90 100 122Z" fill="#6f8f3e"/>
-                <path d="M100 100 C128 100 152 82 160 50 C124 50 102 70 100 100Z" fill="#234a35"/>
-                <path d="M100 72 C86 60 84 40 97 20 C111 38 111 58 100 72Z" fill="#8fae55"/>
-                <path d="M100 148 C124 148 144 134 152 110 C122 108 104 124 100 148Z" fill="#8fae55"/>
-                <path d="M62 170 H138 L128 230 H72 Z" fill="#c0623a"/>
-                <rect x="56" y="162" width="88" height="16" rx="5" fill="#a5512d"/>
-              </svg>
-              <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div id="dropzone" class="drop">
+            <div class="drop-inner">
+              <span class="drop-ico" data-icon="camera"></span>
+              <p class="drop-title">Photograph the whole plant in daylight</p>
+              <p class="drop-hint">Add a close-up if something looks wrong. You can also drop a photo here.</p>
+              <div class="drop-actions">
+                <label class="btn primary" for="cameraInput">Take a photo</label>
+                <label class="btn outline" for="galleryInput">Upload</label>
+              </div>
             </div>
-            <label class="shutter" for="cameraInput" aria-label="Take a photo">
-              <span class="shutter-ring"><span data-icon="camera"></span></span>
-            </label>
           </div>
           <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden />
-          <p class="shutter-cap">Tap to take a photo</p>
-          <label class="link-btn" for="galleryInput">or upload one from your photos</label>
           <input id="galleryInput" type="file" accept="image/*" hidden />
 
           <p id="quotaLine" class="quota"></p>
 
-          <ul class="tips">
-            <li><span data-icon="sun"></span>Good light</li>
-            <li><span data-icon="sprout"></span>Whole plant</li>
-            <li><span data-icon="eye"></span>Close-up of anything odd</li>
-          </ul>
-
           <div id="recent"></div>
         </div>
 
-        <!-- 2. Preview -->
         <div id="scan-preview" class="step">
-          <p class="eyebrow">Ready to check</p>
-          <div class="frame"><img id="previewImg" alt="Your plant photo" /></div>
-          <button id="noteToggle" class="link-btn">+ Add a note for a better answer</button>
-          <textarea id="notes" class="field hidden" rows="3" maxlength="1000"
-            placeholder="e.g. Planted 3 weeks ago, leaves turning yellow, I water every day"></textarea>
-          <button id="analyzeBtn" class="btn primary block"><span data-icon="eye"></span>Check my plant</button>
-          <button id="retakeBtn" class="btn ghost block">Choose a different photo</button>
-        </div>
-
-        <!-- 3. Loading -->
-        <div id="scan-loading" class="step">
-          <div class="frame scanning">
-            <img id="loadingImg" alt="" />
-            <div class="scan-line"></div>
+          <p class="kicker">Ready</p>
+          <div class="preview-grid">
+            <div class="frame"><img id="previewImg" alt="Your plant photo" /></div>
+            <div class="preview-side">
+              <h1 class="display small">Check this plant?</h1>
+              <label class="fl"><span>Anything we should know? <em>Optional</em></span>
+                <textarea id="notes" class="field" rows="4" maxlength="1000"
+                  placeholder="Planted three weeks ago. Lower leaves going yellow. Watered daily."></textarea>
+              </label>
+              <button id="analyzeBtn" class="btn primary block">Check my plant</button>
+              <button id="retakeBtn" class="btn ghost block">Choose another photo</button>
+            </div>
           </div>
-          <ul id="loadingSteps" class="progress-list">
-            <li><span class="dot"></span>Identifying the plant</li>
-            <li><span class="dot"></span>Reading its growth stage</li>
-            <li><span class="dot"></span>Checking leaves and stems</li>
-            <li><span class="dot"></span>Writing your care plan</li>
-          </ul>
-          <p class="muted center small">Usually 15–40 seconds</p>
         </div>
 
-        <!-- 4. Result -->
+        <div id="scan-loading" class="step">
+          <div class="preview-grid">
+            <div class="frame scanning">
+              <img id="loadingImg" alt="" />
+              <div class="scan-bar"></div>
+            </div>
+            <div class="preview-side">
+              <div class="ai-msg thinking"><img class="ai-avatar" src="/planty-avatar.svg" alt="" width="44" height="44" /><div class="ai-bubble"><p class="ai-name"><b>Florae</b><span>AI</span></p><p class="verdict-text">Looking at your photo<span class="sp-dots"><i>.</i><i>.</i><i>.</i></span></p></div></div>
+              <ol id="loadingSteps" class="progress-list">
+                <li><span class="dot"></span>Identifying the plant</li>
+                <li><span class="dot"></span>Reading its growth stage</li>
+                <li><span class="dot"></span>Looking over leaves and stems</li>
+                <li><span class="dot"></span>Writing your plan</li>
+              </ol>
+              <p class="muted small">This usually takes 15 to 40 seconds.</p>
+            </div>
+          </div>
+        </div>
+
         <div id="scan-result" class="step">
           <div id="result"></div>
           <div class="result-actions">
-            <button id="shareBtn" class="btn primary block"><span data-icon="chat"></span>Ask the community</button>
-            <button id="againBtn" class="btn outline block"><span data-icon="camera"></span>Check another plant</button>
-            <button id="deleteScanBtn" class="btn ghost danger block hidden"><span data-icon="trash"></span>Remove from My plants</button>
+            <button id="shareBtn" class="btn primary">Ask the community</button>
+            <button id="againBtn" class="btn outline">Check another plant</button>
+            <button id="deleteScanBtn" class="btn ghost danger hidden">Remove from My plants</button>
           </div>
-          <p class="disclaimer">Planty uses AI and can make mistakes. For valuable crops or anything toxic, check with a local expert.</p>
+          <p class="disclaimer">Florae uses AI and can be wrong. For valuable crops, or anything you might eat or that could be toxic, confirm with a local expert.</p>
         </div>
       </section>
 
       <!-- ========== COMMUNITY ========== -->
       <section id="view-community" class="view">
         <div class="view-head">
-          <p class="eyebrow">The greenhouse</p>
-          <h1 class="display page-title">Community</h1>
-          <p class="lead">Share what you grow. Ask, help, learn.</p>
+          <div>
+            <h1 class="display">Community</h1>
+            <p class="lead">Questions, progress and advice from other growers.</p>
+          </div>
+          <button id="composeBtn" class="btn primary"><span data-icon="plus"></span>New post</button>
         </div>
         <div id="feed"></div>
-        <button id="composeBtn" class="fab" aria-label="New post"><span data-icon="plus"></span></button>
       </section>
 
       <!-- ========== MY PLANTS ========== -->
       <section id="view-garden" class="view">
         <div class="view-head">
-          <p class="eyebrow">Your herbarium</p>
-          <h1 class="display page-title">My plants</h1>
-          <p class="lead">Every check you've made, saved to your account.</p>
+          <div>
+            <h1 class="display">My plants</h1>
+            <p class="lead">Every check you've made, saved to your account.</p>
+          </div>
         </div>
         <div id="garden"></div>
       </section>
     </main>
-
-    <nav class="dock" aria-label="Main">
-      <button class="tab active" data-view="scan" aria-label="Scan"><span data-icon="camera"></span><span class="lbl">Scan</span></button>
-      <button class="tab" data-view="community" aria-label="Community"><span data-icon="chat"></span><span class="lbl">Community</span></button>
-      <button class="tab" data-view="garden" aria-label="My plants"><span data-icon="sprout"></span><span class="lbl">My plants</span></button>
-    </nav>
   </div>
 
   <div id="toast" class="toast hidden" role="status"></div>
@@ -225,60 +263,54 @@
   <!-- ================= SHEETS ================= -->
   <div id="sheetBackdrop" class="backdrop hidden"></div>
 
-  <!-- New post -->
   <div id="composeSheet" class="sheet" role="dialog" aria-label="New post">
-    <div class="grabber"></div>
-    <h2>New post</h2>
-    <p id="composeAs" class="muted"></p>
-    <textarea id="postBody" class="field" rows="4" maxlength="2000"
-      placeholder="What are you growing? How's it going? Ask anything."></textarea>
+    <div class="sheet-head"><h2>New post</h2><button class="icon-btn" data-close-sheet aria-label="Close"><span data-icon="close"></span></button></div>
+    <p id="composeAs" class="muted small"></p>
+    <textarea id="postBody" class="field" rows="5" maxlength="2000"
+      placeholder="What are you growing? What would you like to ask?"></textarea>
     <input id="postPlant" class="field" maxlength="80" placeholder="Plant name (optional)" />
     <div id="postPhotoWrap" class="post-photo hidden">
       <img id="postPhoto" alt="" />
-      <button id="removePhotoBtn" class="chip-btn">Remove</button>
+      <button id="removePhotoBtn" class="link-btn">Remove photo</button>
     </div>
-    <label id="addPhotoLabel" class="link-btn" for="postPhotoInput">+ Add a photo</label>
+    <label id="addPhotoLabel" class="link-btn" for="postPhotoInput">Add a photo</label>
     <input id="postPhotoInput" type="file" accept="image/*" hidden />
     <button id="publishBtn" class="btn primary block">Post</button>
   </div>
 
-  <!-- Post + replies -->
   <div id="postSheet" class="sheet tall" role="dialog" aria-label="Post">
-    <div class="grabber"></div>
+    <div class="sheet-head"><span></span><button class="icon-btn" data-close-sheet aria-label="Close"><span data-icon="close"></span></button></div>
     <div id="postDetail"></div>
     <div class="comment-bar">
-      <input id="commentInput" class="field" maxlength="1000" placeholder="Write a reply…" />
-      <button id="sendCommentBtn" class="icon-btn solid" aria-label="Send"><span data-icon="send"></span></button>
+      <input id="commentInput" class="field" maxlength="1000" placeholder="Write a reply" />
+      <button id="sendCommentBtn" class="btn primary" aria-label="Send">Reply</button>
     </div>
   </div>
 
-  <!-- Account -->
   <div id="accountSheet" class="sheet" role="dialog" aria-label="Your account">
-    <div class="grabber"></div>
+    <div class="sheet-head"><span></span><button class="icon-btn" data-close-sheet aria-label="Close"><span data-icon="close"></span></button></div>
     <div class="account-head">
       <span id="accountAvatar"></span>
-      <div><h2 id="accountTitle">Your account</h2><p id="accountEmail" class="muted"></p></div>
+      <div><h2 id="accountTitle">Your account</h2><p id="accountEmail" class="muted small"></p></div>
     </div>
     <div id="accountQuota" class="quota-card"></div>
     <label class="fl"><span>Name shown on your posts</span>
       <input id="accountName" maxlength="40" autocomplete="name" />
     </label>
     <button id="saveNameBtn" class="btn outline block">Save name</button>
-    <button id="signOutBtn" class="btn ghost danger block"><span data-icon="logout"></span>Sign out</button>
-    <p class="fine"><a href="privacy.html">Privacy notice</a></p>
+    <button id="signOutBtn" class="btn ghost danger block">Sign out</button>
+    <p class="fine"><a href="/privacy.html">Privacy notice</a></p>
   </div>
 
-  <!-- Set a new password (after a reset link) -->
   <div id="passwordSheet" class="sheet" role="dialog" aria-label="Set a new password">
-    <div class="grabber"></div>
-    <h2>Set a new password</h2>
-    <p class="muted">Choose a password with at least 8 characters.</p>
+    <div class="sheet-head"><h2>Set a new password</h2></div>
+    <p class="muted small">At least 8 characters.</p>
     <label class="fl"><span>New password</span>
       <input id="newPassword" type="password" autocomplete="new-password" minlength="8" />
     </label>
     <button id="savePasswordBtn" class="btn primary block">Save password</button>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>

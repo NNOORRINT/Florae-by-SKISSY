@@ -1,11 +1,11 @@
 {
-  "name": "Planty by Skissy",
-  "short_name": "Planty",
-  "description": "Snap a photo of your plant. Planty names it, spots trouble early and tells you what to do next.",
+  "name": "Florae by Skissy",
+  "short_name": "Florae",
+  "description": "Snap a photo of your plant. Florae names it, spots trouble early and tells you what to do next.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f3eee3",
-  "theme_color": "#f3eee3",
+  "background_color": "#f3faf0",
+  "theme_color": "#f3faf0",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
